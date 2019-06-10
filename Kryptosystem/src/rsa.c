@@ -60,6 +60,25 @@ unsigned int crypt2(unsigned int x, unsigned int key, unsigned int N)
 	return (unsigned int)y;
 }
 
+unsigned long long binMult64(unsigned int a, unsigned int  b)
+{
+	int bits = 32;
+	unsigned int y[] = { 0,0 };
+	unsigned int test = 1 << (bits-1);
+	unsigned int tmp;
+	for (int i = 0; i < bits; i++)
+	{
+		if (b & (test >> i))
+		{
+			tmp = y[0];
+			y[0] += a << ((bits-1) - i);
+			if (y[0] < tmp) y[1]++;
+			y[1] += a >> (i+1);
+		}
+	}
+	return *((unsigned long long*)y);
+}
+
 unsigned int main(unsigned int argc, char* argv[])
 {
 	printf("RSA-Test\n\n");
@@ -69,6 +88,8 @@ unsigned int main(unsigned int argc, char* argv[])
 
 	unsigned int test = 1 << 31;
 	printf("test = %x\n", test>>31);
+
+	printf("y = %llu\n", binMult64(2376876375, 4198724862));
 
 	//unsigned int p = 11;
 	unsigned int p = getPrime(64000);
@@ -90,6 +111,8 @@ unsigned int main(unsigned int argc, char* argv[])
 
 	unsigned int N = p * q;
 	printf("N = %u\n", N);
+	
+	//exit(0);
 
 	unsigned int phi = (p - 1) * (q - 1);
 	printf("phi(N) = %u\n", phi);
@@ -111,7 +134,7 @@ unsigned int main(unsigned int argc, char* argv[])
 				printf(" ; m = %u\n", (crypt2(c, d, N) - 15) / 3);
 			}
 		}
-		if (e >= 229) break;
+		if (e >= 5000) break;
 	}
 
 	unsigned int i = 0;
