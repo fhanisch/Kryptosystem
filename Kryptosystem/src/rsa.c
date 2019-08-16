@@ -3,6 +3,9 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
+#include <intrin.h>
+
+//#pragma intrinsic(_umul128)
 
 unsigned int isPrime(unsigned int x)
 {
@@ -91,6 +94,11 @@ unsigned int main(unsigned int argc, char* argv[])
 
 	printf("y = %llu\n", binMult64(2376876375, 4198724862));
 
+	unsigned __int64 m1 = 0xffffffffffffffffI64, m2 = 0xffffffffffffffffI64, pH, pL;
+	pL = _umul128(m1, m2, &pH);
+	printf("%llu%llu\n", pH, pL);
+	printf_s("%#I64x * %#I64x = %#I64x%I64x\n", m1, m2, pH, pL);
+	exit(1);
 	//unsigned int p = 11;
 	unsigned int p = getPrime(64000);
 	printf("Primzahl p = %u\n", p);
